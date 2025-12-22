@@ -447,3 +447,74 @@ button:active {
     color: var(--text-primary);
     background: rgba(255, 255, 255, 0.05);
 }
+
+/* Spatial OS UI (3D HUD) */
+.spatial-os-ui {
+    width: 600px;
+    height: 350px;
+    background: rgba(0, 20, 30, 0.4);
+    border: 2px solid var(--accent-cyan);
+    color: white;
+    padding: 32px;
+    display: flex;
+    flex-direction: column;
+    pointer-events: none;
+    font-family: var(--font-display);
+}
+
+.os-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+}
+
+.os-time {
+    font-size: 24px;
+    font-weight: 700;
+}
+
+.os-icon-battery {
+    width: 32px;
+    height: 16px;
+    border: 1px solid white;
+    padding: 1px;
+}
+
+.os-battery-level {
+    height: 100%;
+    background: var(--accent-emerald);
+}
+
+.os-main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+.os-welcome {
+    font-size: 42px;
+    margin: 0;
+}
+
+.os-desc {
+    font-size: 14px;
+    color: var(--accent-cyan);
+    margin-top: 4px;
+}
+
+.os-app-row {
+    display: flex;
+    gap: 12px;
+    margin-top: 32px;
+}
+
+.os-app-chip {
+    padding: 8px 16px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    font-size: 11px;
+}

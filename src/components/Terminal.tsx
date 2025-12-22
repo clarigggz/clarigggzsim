@@ -58,14 +58,14 @@ log("Diagnostic complete.");
     return (
         <div className="terminal-container glass">
             <div className="terminal-header">
-                <div className="flex items-center gap-2">
-                    <TerminalIcon size={14} className="text-cyan-400" />
-                    <span className="text-[10px] font-bold uppercase tracking-widest">Scripting Engine</span>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <TerminalIcon size={14} style={{ color: 'var(--accent-cyan)' }} />
+                    <span style={{ fontSize: '10px', fontWeight: 'bold', textTransform: 'uppercase', letterSpacing: '0.1em' }}>Scripting Console</span>
                 </div>
-                <div className="flex items-center gap-2">
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                     <button onClick={runScript} className="terminal-btn run">
                         <Play size={12} fill="currentColor" />
-                        Run
+                        Execute
                     </button>
                     <button onClick={() => setLogs([])} className="terminal-btn">
                         <Trash2 size={12} />
