@@ -156,8 +156,63 @@ const InspectorContent = () => {
     );
 };
 
+const SettingsContent = () => {
+    const apiServerPort = useSimulatorStore(s => s.apiServerPort);
+    const toggleApiServer = useSimulatorStore(s => s.toggleApiServer);
+
+    return (
+        <div style={{ padding: '32px', display: 'flex', flexDirection: 'column', gap: '32px', maxWidth: '600px' }}>
+            <div>
+                <h3 style={{ fontSize: '11px', marginBottom: '16px', color: 'var(--accent-cyan)', letterSpacing: '2px', fontWeight: '800' }}>LOCAL INTEGRATION</h3>
+                <div style={{ background: 'var(--bg-surface-light)', border: '1px solid var(--glass-border)', borderRadius: '12px', padding: '24px' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                        <div>
+                            <div style={{ fontSize: '14px', fontWeight: '600', marginBottom: '4px' }}>Clarigggz CLI & API</div>
+                            <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>Expose simulation endpoints for external automation.</div>
+                        </div>
+                        <button
+                            onClick={() => toggleApiServer(apiServerPort === 0)}
+                            style={{
+                                background: apiServerPort > 0 ? 'var(--accent-emerald)' : 'rgba(255,255,255,0.05)',
+                                color: apiServerPort > 0 ? 'black' : 'white',
+                                padding: '8px 24px',
+                                fontWeight: '700',
+                                fontSize: '10px',
+                                borderRadius: '100px',
+                                transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                                boxShadow: apiServerPort > 0 ? '0 0 20px rgba(16, 185, 129, 0.3)' : 'none'
+                            }}
+                        >
+                            {apiServerPort > 0 ? 'ACTIVE' : 'ENABLE'}
+                        </button>
+                    </div>
+
+                    {apiServerPort > 0 && (
+                        <div style={{ marginTop: '24px', paddingTop: '24px', borderTop: '1px solid var(--glass-border)', display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                <span style={{ fontSize: '11px', color: 'var(--text-muted)' }}>Endpoint</span>
+                                <code style={{ fontSize: '11px', color: 'var(--accent-cyan)' }}>http://localhost:{apiServerPort}</code>
+                            </div>
+                            <div style={{ background: '#000', borderRadius: '4px', padding: '12px', fontSize: '11px', fontFamily: 'monospace', color: '#666' }}>
+                                $ clarigggz --port {apiServerPort} status
+                            </div>
+                        </div>
+                    )}
+                </div>
+            </div>
+
+            <div>
+                <h3 style={{ fontSize: '11px', marginBottom: '16px', color: 'var(--text-muted)', letterSpacing: '2px', fontWeight: '800' }}>SYSTEM PREFERENCES</h3>
+                <div style={{ padding: '24px', border: '1px dashed var(--glass-border)', borderRadius: '12px', fontSize: '12px', color: 'var(--text-muted)', textAlign: 'center' }}>
+                    Additional system preferences will be available in v0.5.0
+                </div>
+            </div>
+        </div>
+    );
+};
+
 export function Shell({ children }: { children: React.ReactNode }) {
-    const [activeTab, setActiveTab] = useState<'scripting' | 'inspector' | 'assets'>('scripting');
+    const [activeTab, setActiveTab] = useState<'scripting' | 'inspector' | 'assets' | 'settings'>('scripting');
     const syncWithBackend = useSimulatorStore(s => s.syncWithBackend);
     const isDisplayOn = useSimulatorStore(s => s.isDisplayOn);
 
@@ -199,7 +254,12 @@ export function Shell({ children }: { children: React.ReactNode }) {
                 </div>
 
                 <div style={{ width: '100%' }}>
-                    <SidebarItem icon={<Settings size={20} />} label="Settings" />
+                    <SidebarItem
+                        icon={<Settings size={20} />}
+                        label="Settings"
+                        active={activeTab === 'settings'}
+                        onClick={() => setActiveTab('settings')}
+                    />
                 </div>
             </aside>
 
@@ -246,6 +306,9 @@ export function Shell({ children }: { children: React.ReactNode }) {
                                 <div className={`tab-item ${activeTab === 'assets' ? 'active' : ''}`} onClick={() => setActiveTab('assets')}>
                                     ASSETS
                                 </div>
+                                <div className={`tab-item ${activeTab === 'settings' ? 'active' : ''}`} onClick={() => setActiveTab('settings')}>
+                                    SETTINGS
+                                </div>
                             </div>
 
                             <div style={{ flex: 1, overflow: 'hidden', position: 'relative' }}>
@@ -256,6 +319,7 @@ export function Shell({ children }: { children: React.ReactNode }) {
                                         No localized assets detected in current workspace.
                                     </div>
                                 )}
+                                {activeTab === 'settings' && <SettingsContent />}
                             </div>
                         </div>
                     </div>

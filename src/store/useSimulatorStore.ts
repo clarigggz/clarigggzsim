@@ -8,11 +8,13 @@ interface SimulatorState {
     temperature: number;
     batteryLevel: number;
     rotation: [number, number, number];
+    apiServerPort: number;
 
     toggleKernel: () => Promise<void>;
     toggleDisplay: () => void;
     syncWithBackend: () => Promise<void>;
     setRotation: (rotation: [number, number, number]) => void;
+    toggleApiServer: (enable: boolean) => Promise<void>;
 }
 
 export const useSimulatorStore = create<SimulatorState>((set, get) => ({
@@ -22,6 +24,7 @@ export const useSimulatorStore = create<SimulatorState>((set, get) => ({
     temperature: 25,
     batteryLevel: 100,
     rotation: [0, 0, 0],
+    apiServerPort: 0,
 
     toggleKernel: async () => {
         try {
@@ -53,4 +56,13 @@ export const useSimulatorStore = create<SimulatorState>((set, get) => ({
     },
 
     setRotation: (rotation) => set({ rotation }),
+
+    toggleApiServer: async (enable: boolean) => {
+        try {
+            const port = await invoke<number>('toggle_api_server', { enable });
+            set({ apiServerPort: port });
+        } catch (e) {
+            console.error("API Server toggle failed", e);
+        }
+    },
 }));
