@@ -50,6 +50,11 @@ async fn toggle_api_server(state: State<'_, AppState>, enable: bool) -> Result<u
 }
 
 #[tauri::command]
+fn toggle_display(state: State<'_, AppState>) {
+    state.inner().hardware.toggle_display();
+}
+
+#[tauri::command]
 fn get_hardware_metrics(state: State<'_, AppState>) -> HardwareMetrics {
     state.inner().hardware.get_metrics()
 }
@@ -110,7 +115,8 @@ pub fn run() {
             toggle_kernel,
             start_recording,
             stop_recording,
-            toggle_api_server
+            toggle_api_server,
+            toggle_display
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

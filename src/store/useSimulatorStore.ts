@@ -35,7 +35,14 @@ export const useSimulatorStore = create<SimulatorState>((set, get) => ({
         }
     },
 
-    toggleDisplay: () => set((state) => ({ isDisplayOn: !state.isDisplayOn })),
+    toggleDisplay: async () => {
+        try {
+            await invoke('toggle_display');
+            await get().syncWithBackend();
+        } catch (e) {
+            console.error("Display toggle failed", e);
+        }
+    },
 
     syncWithBackend: async () => {
         try {
@@ -47,7 +54,8 @@ export const useSimulatorStore = create<SimulatorState>((set, get) => ({
                 temperature: metrics.temperature,
                 batteryLevel: metrics.battery_level,
                 isKernelRunning: kernel.is_running,
-                rotation: metrics.rotation
+                rotation: metrics.rotation,
+                isDisplayOn: metrics.display_on
             });
         } catch (e) {
             // Silently fail or log sparingly to avoid log bloat during sync

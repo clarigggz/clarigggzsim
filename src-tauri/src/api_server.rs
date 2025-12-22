@@ -32,6 +32,9 @@ pub async fn start_server(port: u16, state: ApiState) -> Result<(), String> {
         .route("/metrics", get(get_metrics))
         .route("/kernel/state", get(get_kernel_state))
         .route("/kernel/toggle", post(toggle_kernel))
+        .route("/display/toggle", post(toggle_display))
+        .route("/recording/start", post(start_recording))
+        .route("/recording/stop", post(stop_recording))
         .route("/script/run", post(run_script))
         .with_state(state);
 
@@ -58,6 +61,19 @@ async fn toggle_kernel(State(state): State<ApiState>) -> Json<bool> {
         state.kernel.start();
     }
     Json(!current)
+}
+
+async fn toggle_display(State(state): State<ApiState>) -> Json<bool> {
+    Json(state.hardware.toggle_display())
+}
+
+async fn start_recording(State(state): State<ApiState>) -> Json<bool> {
+    state.hardware.start_recording();
+    Json(true)
+}
+
+async fn stop_recording(State(state): State<ApiState>) -> Json<Vec<HardwareMetrics>> {
+    Json(state.hardware.stop_recording())
 }
 
 async fn run_script(

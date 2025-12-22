@@ -8,6 +8,7 @@ pub struct HardwareMetrics {
     pub battery_level: f32,
     pub rotation: [f32; 3],
     pub acceleration: [f32; 3],
+    pub display_on: bool,
 }
 
 pub struct HardwareManager {
@@ -25,10 +26,17 @@ impl HardwareManager {
                 battery_level: 100.0,
                 rotation: [0.0, 0.0, 0.0],
                 acceleration: [0.0, 0.0, 0.0],
+                display_on: true,
             }),
             recording: Mutex::new(false),
             history: Mutex::new(vec![]),
         }
+    }
+
+    pub fn toggle_display(&self) -> bool {
+        let mut m = self.metrics.lock().unwrap();
+        m.display_on = !m.display_on;
+        m.display_on
     }
 
     pub fn update_rotation(&self, x: f32, y: f32, z: f32) {
