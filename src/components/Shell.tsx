@@ -1,7 +1,8 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Layers, Settings, Play, Box, Terminal as TerminalIcon, Cpu, Glasses, Monitor, Square } from 'lucide-react';
 import { useSimulatorStore } from '../store/useSimulatorStore';
 import { ScriptTerminal } from './Terminal';
+import { Scene } from '../simulator/Scene';
 
 interface SidebarItemProps {
     icon: React.ReactNode;

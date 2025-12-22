@@ -1,7 +1,7 @@
 import { Canvas, useFrame } from "@react-three/fiber";
-import { OrbitControls, Grid, PerspectiveCamera, Environment, ContactShadows, Float } from "@react-three/drei";
-import { Suspense, useRef } from "react";
-import * as THREE from 'three';
+import { OrbitControls, Grid, PerspectiveCamera, Environment, ContactShadows, Float, Html } from "@react-three/drei";
+import { useRef, Suspense } from "react";
+import * as THREE from "three";
 import { useSimulatorStore } from "../store/useSimulatorStore";
 
 function GlassesModel() {
@@ -54,7 +54,8 @@ function GlassesModel() {
 }
 
 function SpatialHUD() {
-    const { isDisplayOn, isKernelRunning } = useSimulatorStore();
+    const { isKernelRunning, isDisplayOn, batteryLevel } = useSimulatorStore();
+    const timeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
     if (!isDisplayOn || !isKernelRunning) return null;
 
@@ -64,23 +65,48 @@ function SpatialHUD() {
                 <mesh>
                     <planeGeometry args={[1.6, 0.9]} />
                     <meshStandardMaterial
-                        color="#000"
-                        emissive="#00f2ff"
-                        emissiveIntensity={0.5}
                         transparent
-                        opacity={0.4}
+                        opacity={0.15}
+                        color="#001a1a"
+                        roughness={0.1}
+                        metalness={0.8}
+                        side={THREE.DoubleSide}
                     />
                 </mesh>
+
+                {/* Frame Brackets */}
                 <mesh position={[0, 0, 0.01]}>
-                    <planeGeometry args={[1.58, 0.88]} />
-                    <meshBasicMaterial color="#00f2ff" wireframe />
+                    <planeGeometry args={[1.65, 0.95]} />
+                    <meshBasicMaterial color="#00f2ff" wireframe transparent opacity={0.3} />
                 </mesh>
 
-                {/* Simulation of a Window/App */}
-                <mesh position={[0, 0, 0.02]}>
-                    <planeGeometry args={[0.8, 0.5]} />
-                    <meshStandardMaterial color="#00f2ff" transparent opacity={0.1} side={THREE.DoubleSide} />
-                </mesh>
+                <Html
+                    transform
+                    distanceFactor={1}
+                    position={[0, 0, 0.02]}
+                    scale={0.2}
+                    occlude
+                >
+                    <div className="spatial-os-ui">
+                        <header className="os-header">
+                            <span className="os-time">{timeStr}</span>
+                            <div className="os-status-icons">
+                                <div className="os-icon-battery">
+                                    <div className="os-battery-level" style={{ width: `${batteryLevel}%` }} />
+                                </div>
+                            </div>
+                        </header>
+                        <main className="os-main">
+                            <h2 className="os-welcome">Clarigggz OS</h2>
+                            <p className="os-desc">Spatial Engine v0.4.2 Active</p>
+                            <div className="os-app-row">
+                                {[1, 2, 3].map(i => (
+                                    <div key={i} className="os-app-chip">App-{i}</div>
+                                ))}
+                            </div>
+                        </main>
+                    </div>
+                </Html>
             </group>
         </Float>
     );

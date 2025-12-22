@@ -1,35 +1,33 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700&display=swap');
 
 :root {
-    --bg-deep: #050505;
-    --bg-surface: rgba(18, 18, 18, 0.8);
-    --bg-surface-light: rgba(255, 255, 255, 0.05);
+    --bg-deep: #020202;
+    --bg-surface: rgba(10, 10, 10, 0.8);
+    --bg-surface-light: rgba(255, 255, 255, 0.03);
 
     --accent-cyan: #00f2ff;
     --accent-magenta: #ff00f2;
     --accent-blue: #2d5bff;
+    --accent-emerald: #10b981;
 
-    --text-primary: #ffffff;
-    --text-secondary: rgba(255, 255, 255, 0.6);
-    --text-muted: rgba(255, 255, 255, 0.4);
+    --text-primary: #f8fafc;
+    --text-secondary: #94a3b8;
+    --text-muted: #64748b;
 
-    --glass-border: rgba(255, 255, 255, 0.1);
-    --glass-blur: blur(16px);
+    --glass-border: rgba(255, 255, 255, 0.08);
+    --glass-blur: blur(20px);
 
-    --font-main: 'Inter', sans-serif;
-    --font-display: 'Outfit', sans-serif;
+    --font-main: 'Inter', system-ui, -apple-system, sans-serif;
+    --font-display: 'Outfit', system-ui, sans-serif;
 }
 
 * {
-    margin: 0;
-    padding: 0;
     box-sizing: border-box;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
 }
 
 body {
-    background-color: var(--bg-deep);
     color: var(--text-primary);
     font-family: var(--font-main);
     overflow: hidden;
