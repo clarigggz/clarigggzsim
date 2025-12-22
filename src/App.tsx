@@ -1,14 +1,14 @@
-import React, { Suspense } from 'react';
 import { Shell } from "./components/Shell";
 import { Scene } from "./simulator/Scene";
 
 function App() {
+  console.log("App Component Rendering");
   return (
-    <Suspense fallback={<div style={{ color: 'white', padding: '20px' }}>Loading Spatial Engine...</div>}>
+    <div style={{ width: '100vw', height: '100vh', background: '#050505' }}>
       <Shell>
         <Scene />
       </Shell>
-    </Suspense>
+    </div>
   );
 }
 

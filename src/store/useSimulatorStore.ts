@@ -24,8 +24,12 @@ export const useSimulatorStore = create<SimulatorState>((set, get) => ({
     rotation: [0, 0, 0],
 
     toggleKernel: async () => {
-        await invoke('toggle_kernel');
-        await get().syncWithBackend();
+        try {
+            await invoke('toggle_kernel');
+            await get().syncWithBackend();
+        } catch (e) {
+            console.error("Kernel toggle failed", e);
+        }
     },
 
     toggleDisplay: () => set((state) => ({ isDisplayOn: !state.isDisplayOn })),
@@ -43,10 +47,10 @@ export const useSimulatorStore = create<SimulatorState>((set, get) => ({
                 rotation: metrics.rotation
             });
         } catch (e) {
-            console.error("Backend sync failed", e);
+            // Silently fail or log sparingly to avoid log bloat during sync
+            if (Math.random() < 0.01) console.error("Sync heartbeat failed");
         }
     },
 
     setRotation: (rotation) => set({ rotation }),
 }));
-
