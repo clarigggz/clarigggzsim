@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Settings, Play, Box, Terminal as TerminalIcon, Glasses, Monitor, Square, Activity, Database, Zap } from 'lucide-react';
+import { Settings, Play, Terminal as TerminalIcon, Glasses, Monitor, Square, Database, Zap, Cpu } from 'lucide-react';
 import { useSimulatorStore } from '../store/useSimulatorStore';
 import { ScriptTerminal } from './Terminal';
 
@@ -17,7 +17,6 @@ const SidebarItem = React.memo(({ icon, label, active, onClick }: SidebarItemPro
     </div>
 ));
 
-// Sub-component for performance
 const BadgeLive = () => {
     const isKernelRunning = useSimulatorStore(s => s.isKernelRunning);
     return (
@@ -116,54 +115,49 @@ const StatusBar = () => {
     );
 };
 
-const Inspector = () => {
+const InspectorContent = () => {
     const isKernelRunning = useSimulatorStore(s => s.isKernelRunning);
     const cpuLoad = useSimulatorStore(s => s.cpuLoad);
     const temperature = useSimulatorStore(s => s.temperature);
     const rotation = useSimulatorStore(s => s.rotation);
 
     return (
-        <aside className="right-panel">
-            <div className="inspector-header">
-                <h3 className="inspector-title">Environment Inspector</h3>
-            </div>
-            <div className="inspector-content">
-                <div className="metric-card">
-                    <span className="metric-label">Node Status</span>
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px', marginTop: '8px' }}>
-                        <div>
-                            <span className="metric-label">CPU LOAD</span>
-                            <span className="metric-value" style={{ color: 'var(--accent-cyan)' }}>
-                                {isKernelRunning ? `${cpuLoad.toFixed(1)}%` : '0.0%'}
-                            </span>
-                        </div>
-                        <div>
-                            <span className="metric-label">TEMP</span>
-                            <span className="metric-value" style={{ color: temperature > 60 ? '#ef4444' : '#fb923c' }}>
-                                {isKernelRunning ? `${temperature.toFixed(1)}°C` : '24.2°C'}
-                            </span>
-                        </div>
+        <div className="inspector-content" style={{ padding: '24px' }}>
+            <div className="metric-card">
+                <span className="metric-label">Node Status</span>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px', marginTop: '8px' }}>
+                    <div>
+                        <span className="metric-label">CPU LOAD</span>
+                        <span className="metric-value" style={{ color: 'var(--accent-cyan)' }}>
+                            {isKernelRunning ? `${cpuLoad.toFixed(1)}%` : '0.0%'}
+                        </span>
+                    </div>
+                    <div>
+                        <span className="metric-label">TEMP</span>
+                        <span className="metric-value" style={{ color: temperature > 60 ? '#ef4444' : '#fb923c' }}>
+                            {isKernelRunning ? `${temperature.toFixed(1)}°C` : '24.2°C'}
+                        </span>
                     </div>
                 </div>
+            </div>
 
-                <div className="metric-card">
-                    <span className="metric-label">Inertial Measurement</span>
-                    <div style={{ marginTop: '8px', display: 'flex', flexDirection: 'column', gap: '6px' }}>
-                        {['Pitch', 'Yaw', 'Roll'].map((label, i) => (
-                            <div key={label} style={{ display: 'flex', justifyContent: 'space-between', fontSize: '11px' }}>
-                                <span style={{ color: 'var(--text-muted)' }}>{label}:</span>
-                                <span style={{ color: 'white' }}>{rotation[i].toFixed(3)}°</span>
-                            </div>
-                        ))}
-                    </div>
+            <div className="metric-card" style={{ marginTop: '16px' }}>
+                <span className="metric-label">Inertial Measurement</span>
+                <div style={{ marginTop: '8px', display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                    {['Pitch', 'Yaw', 'Roll'].map((label, i) => (
+                        <div key={label} style={{ display: 'flex', justifyContent: 'space-between', fontSize: '11px' }}>
+                            <span style={{ color: 'var(--text-muted)' }}>{label}:</span>
+                            <span style={{ color: 'white' }}>{rotation[i].toFixed(3)}°</span>
+                        </div>
+                    ))}
                 </div>
             </div>
-        </aside>
+        </div>
     );
 };
 
 export function Shell({ children }: { children: React.ReactNode }) {
-    const [activeTab, setActiveTab] = useState<'simulator' | 'console'>('simulator');
+    const [activeTab, setActiveTab] = useState<'scripting' | 'inspector' | 'assets'>('scripting');
     const syncWithBackend = useSimulatorStore(s => s.syncWithBackend);
     const isDisplayOn = useSimulatorStore(s => s.isDisplayOn);
 
@@ -177,7 +171,7 @@ export function Shell({ children }: { children: React.ReactNode }) {
 
     return (
         <div className="shell-container" style={{ background: '#020202', color: 'white' }}>
-            {/* Sidebar */}
+            {/* Sidebar - Global Navigation */}
             <aside className="sidebar">
                 <div className="sidebar-logo">
                     <Glasses size={22} color="white" />
@@ -185,19 +179,23 @@ export function Shell({ children }: { children: React.ReactNode }) {
 
                 <div style={{ width: '100%', flex: 1 }}>
                     <SidebarItem
-                        icon={<Box size={20} />}
-                        label="Simulator"
-                        active={activeTab === 'simulator'}
-                        onClick={() => setActiveTab('simulator')}
+                        icon={<TerminalIcon size={20} />}
+                        label="Scripting"
+                        active={activeTab === 'scripting'}
+                        onClick={() => setActiveTab('scripting')}
                     />
                     <SidebarItem
-                        icon={<TerminalIcon size={20} />}
-                        label="OS Console"
-                        active={activeTab === 'console'}
-                        onClick={() => setActiveTab('console')}
+                        icon={<Cpu size={20} />}
+                        label="Inspector"
+                        active={activeTab === 'inspector'}
+                        onClick={() => setActiveTab('inspector')}
                     />
-                    <SidebarItem icon={<Activity size={20} />} label="Metrics" />
-                    <SidebarItem icon={<Database size={20} />} label="Assets" />
+                    <SidebarItem
+                        icon={<Database size={20} />}
+                        label="Assets"
+                        active={activeTab === 'assets'}
+                        onClick={() => setActiveTab('assets')}
+                    />
                 </div>
 
                 <div style={{ width: '100%' }}>
@@ -207,40 +205,64 @@ export function Shell({ children }: { children: React.ReactNode }) {
 
             {/* Main Content Area */}
             <main className="main-area">
-                {/* Top Header */}
                 <header className="top-header">
                     <div style={{ display: 'flex', alignItems: 'center' }}>
                         <h1 className="header-title">
-                            Clarigggz <span className="header-accent">Spatial Simulator</span>
+                            Clarigggz <span className="header-accent">Spatial Platform</span>
                         </h1>
                         <BadgeLive />
                     </div>
                     <HeaderControls />
                 </header>
 
-                {/* Workspace */}
+                {/* Persistent Viewport + Workspace Split */}
                 <div className="workspace">
-                    {activeTab === 'simulator' ? (
-                        <div style={{ width: '100%', height: '100%', position: 'relative' }}>
+                    <div className="workspace-split">
+                        {/* 3D Viewport - Always Visible */}
+                        <div className="viewport-container">
                             {children}
                             {!isDisplayOn && (
                                 <div style={{
                                     position: 'absolute', top: 0, left: 0, width: '100%', height: '100%',
-                                    background: 'rgba(0,0,0,0.9)', display: 'flex', alignItems: 'center',
-                                    justifyContent: 'center', zIndex: 5, color: 'var(--text-muted)',
-                                    fontSize: '12px', letterSpacing: '4px', textAlign: 'center'
+                                    background: 'rgba(0,0,0,0.92)', display: 'flex', alignItems: 'center',
+                                    justifyContent: 'center', zIndex: 5, color: 'var(--accent-cyan)',
+                                    fontSize: '11px', letterSpacing: '3px', textAlign: 'center',
+                                    fontFamily: 'monospace'
                                 }}>
-                                    SYSTEM DISPLAY DOWN
+                                    / SPATIAL_DISPLAY_OFF /
                                 </div>
                             )}
                         </div>
-                    ) : <ScriptTerminal />}
+
+                        {/* Workbench Side Panel - Tabbed Tools */}
+                        <div className="workbench-container">
+                            <div className="tab-header" style={{ padding: '0 16px', height: '40px', alignItems: 'center' }}>
+                                <div className={`tab-item ${activeTab === 'scripting' ? 'active' : ''}`} onClick={() => setActiveTab('scripting')}>
+                                    SCRIPTING
+                                </div>
+                                <div className={`tab-item ${activeTab === 'inspector' ? 'active' : ''}`} onClick={() => setActiveTab('inspector')}>
+                                    STATE
+                                </div>
+                                <div className={`tab-item ${activeTab === 'assets' ? 'active' : ''}`} onClick={() => setActiveTab('assets')}>
+                                    ASSETS
+                                </div>
+                            </div>
+
+                            <div style={{ flex: 1, overflow: 'hidden', position: 'relative' }}>
+                                {activeTab === 'scripting' && <ScriptTerminal />}
+                                {activeTab === 'inspector' && <InspectorContent />}
+                                {activeTab === 'assets' && (
+                                    <div style={{ padding: '24px', color: 'var(--text-muted)', fontSize: '13px' }}>
+                                        No localized assets detected in current workspace.
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 <StatusBar />
             </main>
-
-            <Inspector />
         </div>
     );
 }
