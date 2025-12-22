@@ -18,11 +18,18 @@
 
 <body>
   <div id="root">
-    <div
-      style="background: black; color: #00f2ff; height: 100vh; display: flex; align-items: center; justify-content: center; font-family: monospace;">
-      Initializing Clarigggz Desktop System...
+    <div id="init-loader"
+      style="background: black; color: #00f2ff; height: 100vh; display: flex; align-items: center; justify-content: center; font-family: monospace; flex-direction: column; gap: 10px;">
+      <div style="font-size: 20px;">Clarigggz Spatial Simulator</div>
+      <div id="loader-status">Initializing System...</div>
     </div>
   </div>
+  <script>
+    window.onload = () => {
+      document.getElementById('loader-status').innerText = 'Webview Loaded. Starting React...';
+      console.log("HTML Loader: Webview ready");
+    };
+  </script>
   <script type="module" src="/src/main.tsx"></script>
 </body>
 

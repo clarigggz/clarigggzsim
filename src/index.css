@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700&display=swap');
+/* @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700&display=swap'); */
 
 :root {
     --bg-deep: #020202;
@@ -17,8 +17,8 @@
     --glass-border: rgba(255, 255, 255, 0.08);
     --glass-blur: blur(20px);
 
-    --font-main: 'Inter', system-ui, -apple-system, sans-serif;
-    --font-display: 'Outfit', system-ui, sans-serif;
+    --font-main: system-ui, -apple-system, sans-serif;
+    --font-display: system-ui, sans-serif;
 }
 
 * {
