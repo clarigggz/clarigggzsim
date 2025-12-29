@@ -1,10 +1,10 @@
 [package]
 name = "clarigggzsim"
-version.workspace = true
-edition.workspace = true
-license.workspace = true
+version = "0.1.0"
+edition = "2024"
+license = "Apache-2.0"
 description = "A Tauri App"
-authors.workspace = true
+authors = ["Clarigggz Team"]
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
