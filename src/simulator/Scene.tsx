@@ -1,6 +1,6 @@
 import { Canvas, useFrame } from "@react-three/fiber";
 import { OrbitControls, Grid, PerspectiveCamera, Environment, ContactShadows, Float, Html } from "@react-three/drei";
-import { useRef, Suspense } from "react";
+import { useRef, Suspense, useEffect } from "react";
 import * as THREE from "three";
 import { useSimulatorStore } from "../store/useSimulatorStore";
 
@@ -112,6 +112,72 @@ function SpatialHUD() {
     );
 }
 
+function CameraFeed() {
+    const isCameraOn = useSimulatorStore(s => s.isCameraOn);
+    const videoRef = useRef<HTMLVideoElement>(null);
+
+    useEffect(() => {
+        let stream: MediaStream | null = null;
+        if (isCameraOn && videoRef.current) {
+            navigator.mediaDevices.getUserMedia({ video: true })
+                .then(s => {
+                    stream = s;
+                    if (videoRef.current) videoRef.current.srcObject = s;
+                })
+                .catch(err => console.error("Camera access denied", err));
+        }
+
+        return () => {
+            if (stream) {
+                stream.getTracks().forEach(track => track.stop());
+            }
+        };
+    }, [isCameraOn]);
+
+    if (!isCameraOn) return null;
+
+    return (
+        <group position={[0, 0.5, 0.5]}>
+            <mesh>
+                <planeGeometry args={[1.6, 1.2]} />
+                <meshBasicMaterial color="#000" />
+            </mesh>
+            <Html transform distanceFactor={1.5} position={[0, 0, 0.01]}>
+                <div style={{
+                    width: '320px',
+                    height: '240px',
+                    background: '#000',
+                    border: '2px solid var(--accent-cyan)',
+                    borderRadius: '8px',
+                    overflow: 'hidden',
+                    display: 'flex',
+                    flexDirection: 'column'
+                }}>
+                    <video
+                        ref={videoRef}
+                        autoPlay
+                        playsInline
+                        style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                    />
+                    <div style={{
+                        position: 'absolute',
+                        top: '10px',
+                        left: '10px',
+                        background: 'rgba(0,0,0,0.5)',
+                        color: '#ef4444',
+                        fontSize: '10px',
+                        padding: '2px 6px',
+                        borderRadius: '4px',
+                        fontFamily: 'monospace'
+                    }}>
+                        ● REC
+                    </div>
+                </div>
+            </Html>
+        </group>
+    );
+}
+
 export function Scene() {
     return (
         <div style={{ width: "100%", height: "100%", position: "absolute", top: 0, left: 0 }}>
@@ -147,6 +213,7 @@ export function Scene() {
 
                     <GlassesModel />
                     <SpatialHUD />
+                    <CameraFeed />
 
                     <ContactShadows
                         position={[0, 0, 0]}

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Settings, Play, Terminal as TerminalIcon, Glasses, Monitor, Square, Database, Zap, Cpu } from 'lucide-react';
+import { Settings, Play, Terminal as TerminalIcon, Glasses, Monitor, Square, Database, Zap, Cpu, Camera } from 'lucide-react';
 import { useSimulatorStore } from '../store/useSimulatorStore';
 import { ScriptTerminal } from './Terminal';
 
@@ -39,8 +39,10 @@ const BadgeLive = () => {
 const HeaderControls = () => {
     const isKernelRunning = useSimulatorStore(s => s.isKernelRunning);
     const isDisplayOn = useSimulatorStore(s => s.isDisplayOn);
+    const isCameraOn = useSimulatorStore(s => s.isCameraOn);
     const toggleKernel = useSimulatorStore(s => s.toggleKernel);
     const toggleDisplay = useSimulatorStore(s => s.toggleDisplay);
+    const toggleCamera = useSimulatorStore(s => s.toggleCamera);
 
     return (
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
@@ -73,6 +75,21 @@ const HeaderControls = () => {
                 }}
             >
                 <Monitor size={18} />
+            </button>
+            <button
+                className="btn-primary"
+                onClick={toggleCamera}
+                style={{
+                    padding: '8px',
+                    color: isCameraOn ? 'var(--accent-emerald)' : 'var(--text-muted)',
+                    background: 'transparent',
+                    border: 'none',
+                    position: 'relative'
+                }}
+                title="Simulation API: Camera Feed"
+            >
+                <Camera size={18} />
+                {isCameraOn && <div style={{ position: 'absolute', top: '6px', right: '6px', width: '6px', height: '6px', borderRadius: '50%', background: '#ef4444', border: '1px solid black' }} />}
             </button>
         </div>
     );

@@ -4,6 +4,7 @@ import { invoke } from '@tauri-apps/api/core';
 interface SimulatorState {
     isKernelRunning: boolean;
     isDisplayOn: boolean;
+    isCameraOn: boolean;
     cpuLoad: number;
     temperature: number;
     batteryLevel: number;
@@ -12,6 +13,7 @@ interface SimulatorState {
 
     toggleKernel: () => Promise<void>;
     toggleDisplay: () => void;
+    toggleCamera: () => void;
     syncWithBackend: () => Promise<void>;
     setRotation: (rotation: [number, number, number]) => void;
     toggleApiServer: (enable: boolean) => Promise<void>;
@@ -20,6 +22,7 @@ interface SimulatorState {
 export const useSimulatorStore = create<SimulatorState>((set, get) => ({
     isKernelRunning: false,
     isDisplayOn: true,
+    isCameraOn: false,
     cpuLoad: 0,
     temperature: 25,
     batteryLevel: 100,
@@ -42,6 +45,10 @@ export const useSimulatorStore = create<SimulatorState>((set, get) => ({
         } catch (e) {
             console.error("Display toggle failed", e);
         }
+    },
+
+    toggleCamera: () => {
+        set((state) => ({ isCameraOn: !state.isCameraOn }));
     },
 
     syncWithBackend: async () => {
